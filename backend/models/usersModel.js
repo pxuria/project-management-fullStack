@@ -1,7 +1,9 @@
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 
-const userSchema = mongoose.Schema(
+const Schema = mongoose.Schema;
+
+const userSchema = new Schema(
   {
     name: {
       type: String,
@@ -24,7 +26,8 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    projects: {},
+    projects: [{ type: Schema.Types.ObjectId, ref: "Project" }],
+    tasks: [{ type: Schema.Types.ObjectId, ref: "Task" }],
   },
   { timestamps: true }
 );

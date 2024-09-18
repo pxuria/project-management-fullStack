@@ -1,15 +1,12 @@
 import mongoose from "mongoose";
+const Schema = mongoose.Schema;
 
-const taskSchema = mongoose.Schema(
+const taskSchema = new Schema(
   {
     name: { type: String, required: true, trim: true },
-    peoject: {},
-    employee: {},
-    isDone: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
+    project: { type: Schema.Types.ObjectId, ref: "Project", required: true },
+    addedBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    isDone: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

@@ -1,19 +1,21 @@
 import mongoose from "mongoose";
+const Schema = mongoose.Schema;
 
-const projectSchema = mongoose.Schema(
+const projectSchema = new Schema(
   {
     name: { type: String, required: true, trim: true },
-    tasks: {},
-    employees: {},
+    tasks: [{ type: Schema.Types.ObjectId, ref: "Task" }],
+    users: [{ type: Schema.Types.ObjectId, ref: "User" }],
     description: {
       type: String,
       required: true,
     },
     isDone: {
       type: Boolean,
-      required: true,
       default: false,
     },
+    technologies: [{ type: String }],
+    deadline: { type: Date, required: true },
   },
   { timestamps: true }
 );
