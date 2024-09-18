@@ -14,3 +14,19 @@ export interface userData {
   token: string;
   _id: string;
 }
+
+export interface user {
+  name: string;
+  _id: string;
+  token: string;
+}
+
+export interface signup {
+  name?: string;
+  email?: string;
+  password?: string;
+}
+export interface login {
+  email?: string;
+  password?: string;
+}

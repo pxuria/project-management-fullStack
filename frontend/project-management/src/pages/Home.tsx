@@ -3,7 +3,7 @@ import { ListShow } from "../components/home";
 
 const Home = () => {
   const [search, setSearch] = useState("");
-  const [employees, setEmployees] = useState([{ _id: "1", name: "پوری" }]);
+  // const [employees, setEmployees] = useState([{ _id: "1", name: "پوری" }]);
   const [projects, setProjects] = useState([]);
 
   return (

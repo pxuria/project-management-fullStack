@@ -1,20 +1,17 @@
-import { useEffect, useState } from "react";
-import { IoPerson } from "react-icons/io5";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { PiSignOutBold } from "react-icons/pi";
+import { NavLink } from "react-router-dom";
 import { navLinks } from "../constants";
+import { useAuth } from "../store/useAuth";
 import { Modal } from "./UI";
 import { AuthForm } from "./forms";
 
 const Header = () => {
   const [toggleModal, setToggleModal] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (localStorage.getItem("userId") && localStorage.getItem("token")) setIsLoggedIn(true);
-  }, []);
+  const { isAuthenticated, logout } = useAuth();
 
   const handleToggleModal = () => setToggleModal(!toggleModal);
+
   return (
     <>
       {toggleModal && (
@@ -32,14 +29,14 @@ const Header = () => {
         </nav>
 
         <div>
-          {isLoggedIn ? (
+          {isAuthenticated ? (
             <button
               type="button"
-              onClick={() => navigate("/profile")}
-              className="text-nowrap border-2 border-[#777] outline-none rounded-lg px-4 py-1 bg-white text-black transition-all ease-in duration-200 hover:bg-[#e9e9e9] text-base font-medium flex items-center flex-nowrap gap-2"
+              onClick={logout}
+              className="text-nowrap outline-none rounded-md px-4 py-2 bg-red-600 text-white transition-all ease-in duration-200 hover:bg-red-500 text-base font-medium flex items-center flex-nowrap gap-2"
             >
-              <IoPerson />
-              حساب کاربری
+              <PiSignOutBold />
+              خروج از حساب
             </button>
           ) : (
             <button
@@ -47,7 +44,7 @@ const Header = () => {
               onClick={handleToggleModal}
               className="text-nowrap border outline-none rounded-lg px-4 py-1 bg-primary text-white transition-all ease-in duration-200 hover:bg-secondary text-base font-medium"
             >
-              ورود به حساب کاربری
+              حساب کاربری
             </button>
           )}
         </div>

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
-import { BASE_URL } from "../../../config.json";
-import { formProps, userData } from "../../types";
+import { ValidationError } from "yup";
+import { useAuth } from "../../store/useAuth";
+import { formProps, signup } from "../../types";
 import { signupSchema } from "../../validations";
 
 const SignupForm = ({ onClose }: formProps) => {
@@ -10,36 +11,33 @@ const SignupForm = ({ onClose }: formProps) => {
     email: "",
     password: "",
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<signup>({});
   const [showPassword, setShowPassword] = useState(false);
+  const { signup } = useAuth();
 
-  const formSubmitHandler = async (e) => {
+  const formSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await signupSchema.validate(formData, { abortEarly: false });
-      const res = await fetch(`${BASE_URL}/users`, {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      const data: userData = await res.json();
-      localStorage.setItem("userId", data._id);
-      localStorage.setItem("token", data.token);
 
-      console.log(data);
+      const success = await signup(formData.name, formData.email, formData.password);
+
+      if (success) onClose();
+      else console.error("Signup failed");
     } catch (error) {
-      const newErrors = {};
-      error.inner.forEach((err) => {
-        newErrors[err.path] = err.message;
-      });
-
-      setErrors(newErrors);
+      if (error instanceof ValidationError) {
+        const newErrors: Record<string, string> = {};
+        error.inner.forEach((err) => {
+          if (err.path) {
+            newErrors[err.path] = err.message;
+          }
+        });
+        setErrors(newErrors);
+      }
     }
   };
 
-  const formDataChangeHandler = (e) => {
+  const formDataChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };

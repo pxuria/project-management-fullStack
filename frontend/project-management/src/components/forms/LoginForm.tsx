@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
-import { BASE_URL } from "../../../config.json";
-import { formProps, userData } from "../../types";
+import { ValidationError } from "yup";
+import { useAuth } from "../../store/useAuth";
+import { formProps, login } from "../../types";
 import { loginSchema } from "../../validations";
 
 const LoginForm = ({ onClose }: formProps) => {
@@ -9,40 +10,39 @@ const LoginForm = ({ onClose }: formProps) => {
     email: "",
     password: "",
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<login>({});
   const [showPassword, setShowPassword] = useState(false);
+  const { login } = useAuth();
 
-  const formSubmitHandler = async (e) => {
+  const formSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await loginSchema.validate(formData, { abortEarly: false });
-      const res = await fetch(`${BASE_URL}/users/auth`, {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      const data: userData = await res.json();
-      localStorage.setItem("userId", data._id);
-      localStorage.setItem("token", data.token);
-    } catch (error) {
-      const newErrors = {};
-      error.inner.forEach((err) => {
-        newErrors[err.path] = err.message;
-      });
 
-      setErrors(newErrors);
+      const success = await login(formData.email, formData.password);
+
+      if (success) onClose();
+      else console.error("Login failed");
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        const newErrors: Record<string, string> = {};
+        error.inner.forEach((err) => {
+          if (err.path) {
+            newErrors[err.path] = err.message;
+          }
+        });
+        setErrors(newErrors);
+      }
     }
   };
 
-  const formDataChangeHandler = (e) => {
+  const formDataChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
   return (
-    <form action="" onSubmit={formSubmitHandler} className="py-4 px-8 flex flex-col gap-4">
+    <form onSubmit={formSubmitHandler} className="py-4 px-8 flex flex-col gap-4">
       <div className="flex items-start flex-col gap-3">
         <label htmlFor="email" className="text-lg font-medium text-black ">
           ایمیل :
