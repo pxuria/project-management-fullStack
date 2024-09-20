@@ -7,7 +7,7 @@ import { projectSchema } from "../../validations";
 import { Badge } from "../UI";
 
 const ProjectForm = ({ onClose }: formProps) => {
-  const { user } = useAuth();
+  const { user, fetchUser } = useAuth();
   const [formData, setFormData] = useState<project>({
     name: "",
     description: "",
@@ -18,15 +18,14 @@ const ProjectForm = ({ onClose }: formProps) => {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [badges, setBadges] = useState<string[]>([]);
-  console.log(formData);
 
   const formSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      console.log(formData);
       await projectSchema.validate(formData, { abortEarly: false });
 
+      console.log(user);
       const res = await fetch(`${BASE_URL}/projects`, {
         method: "POST",
         headers: {
@@ -38,6 +37,7 @@ const ProjectForm = ({ onClose }: formProps) => {
       const data = await res.json();
       console.log(data);
       onClose();
+      fetchUser();
     } catch (error) {
       if (error instanceof ValidationError) {
         const newErrors: Record<string, string> = {};
@@ -122,13 +122,20 @@ const ProjectForm = ({ onClose }: formProps) => {
           تکنولوژی های پروژه :
         </label>
         <div className="flex flex-col gap-1 w-full">
-          <input
-            type="text"
-            className="w-full outline-none py-2 px-4 text-base rounded border border-solid border-[#d9d9d9]"
-            name="technologies"
-            onKeyDown={(e) => addTechHandler(e, e.currentTarget.value)}
-            id="technologies"
-          />
+          <div className="relative">
+            <input
+              type="text"
+              className="w-full outline-none py-2 px-4 text-base rounded border border-solid border-[#d9d9d9]"
+              name="technologies"
+              onKeyDown={(e) => addTechHandler(e, e.currentTarget.value)}
+              id="technologies"
+            />
+            <div className="flex flex-nowrap items-center absolute left-1 top-1/2 -translate-y-1/2">
+              <kbd className="kbd">Space</kbd>
+              <span>+</span>
+              <kbd className="kbd">Shift</kbd>
+            </div>
+          </div>
           {errors.technologies && <span className="text-[#FF0000] text-xs">{errors.technologies}</span>}
 
           {badges.length > 0 && (

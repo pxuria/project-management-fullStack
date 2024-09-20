@@ -21,6 +21,8 @@ export interface user {
   _id: string;
   token: string;
   projects: Array;
+  tasks?: Array;
+  isAdmin?: boolean;
 }
 
 export interface signup {
@@ -40,7 +42,7 @@ export interface project {
   technologies: string[];
   deadline?: Date | ReactNode;
   users?: string[];
-  tasks?: string[];
+  tasks?: task[];
   isDone?: boolean;
 }
 

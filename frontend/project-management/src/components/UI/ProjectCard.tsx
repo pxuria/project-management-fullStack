@@ -1,4 +1,5 @@
 import { IoTrashOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 import { project } from "../../types";
 import Badge from "./Badge";
 
@@ -8,18 +9,25 @@ interface ProjectCardProps {
 }
 
 const ProjectCard = ({ project, onDelete }: ProjectCardProps) => {
+  const navigate = useNavigate();
+
+  const deletehandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    if (project._id) onDelete(project._id);
+    else console.error("Project ID is undefined.");
+  };
   return (
-    <div className="rounded-lg border border-gray-400 bg-white hover:bg-[#f8f9fa] transition-all ease-in duration-200 px-4 py-2 w-full sm:w-1/2 cursor-pointer">
+    <div
+      className="rounded-lg border border-gray-400 bg-white hover:bg-[#f8f9fa] transition-all ease-in duration-200 px-4 py-2 w-full sm:w-[calc(50%-8px)] cursor-pointer"
+      onClick={() => navigate(`/projects/${project._id}`)}
+    >
       <div className="flex items-center justify-between w-full">
         <h3 className="text-base font-medium">{project.name}</h3>
 
         <button
           type="button"
           className="bg-white outline-none border-2 border-red-600 text-red-600 py-1 px-2 rounded transition-all ease-in duration-200 hover:bg-red-600 hover:text-white"
-          onClick={() => {
-            if (project._id) onDelete(project._id);
-            else console.error("Project ID is undefined.");
-          }}
+          onClick={deletehandler}
         >
           <IoTrashOutline className="w-6 h-6" />
         </button>

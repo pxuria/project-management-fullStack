@@ -6,24 +6,14 @@ import { useAuth } from "../store/useAuth";
 
 const Home = () => {
   const [search, setSearch] = useState("");
-  const [toggleAddProduct, setToggleAddProduct] = useState(false);
-  const [toggleAddTask, setToggleAddTask] = useState(false);
 
-  const { user, isAuthenticated } = useAuth();
-
-  const toggleAddProductHandler = () => setToggleAddProduct(!toggleAddProduct);
-  const toggleAddTaskHandler = () => setToggleAddTask(!toggleAddTask);
+  const { user, isAuthenticated, toggleAddProduct, toggleAddProductHandler } = useAuth();
 
   return (
     <>
       {toggleAddProduct && (
         <Modal onClose={toggleAddProductHandler}>
           <ProjectForm onClose={toggleAddProductHandler} />
-        </Modal>
-      )}
-      {toggleAddTask && (
-        <Modal onClose={toggleAddTaskHandler}>
-          <ProjectForm onClose={toggleAddTaskHandler} />
         </Modal>
       )}
 

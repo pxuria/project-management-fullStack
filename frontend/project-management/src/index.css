@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.kbd {
+  @apply shadow-[0.5px_0.5px_0_rgba(0,0,0,0.2)] border border-gray-300 mx-1 py-0 p-1 rounded bg-gray-200 select-none text-xs font-normal;
+}

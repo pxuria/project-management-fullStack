@@ -64,7 +64,7 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const getUserById = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id).select("-password").populate("projects");
+  const user = await User.findById(req.params.id).select("-password").populate("projects tasks");
   if (user) {
     res.status(200).json({
       status: "success",

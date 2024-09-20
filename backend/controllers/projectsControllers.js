@@ -67,9 +67,13 @@ const updateProject = asyncHandler(async (req, res) => {
 
 const deleteProject = asyncHandler(async (req, res) => {
   try {
-    const project = await Project.findByIdAndDelete(req.params.id);
+    const project = await Project.findById(req.params.id);
 
     if (!project) return res.status(404).json({ message: "Project not found" });
+
+    await User.updateMany({ _id: { $in: project.users } }, { $pull: { projects: project._id } });
+
+    await Project.findByIdAndDelete(req.params.id);
 
     res.status(200).json({ message: "Project deleted successfully" });
   } catch (error) {
