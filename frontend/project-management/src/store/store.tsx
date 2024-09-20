@@ -12,7 +12,7 @@ interface AuthContextType {
 }
 
 const defaultValue: AuthContextType = {
-  user: { name: "", _id: "", token: "" },
+  user: { name: "", _id: "", token: "", email: "", projects: [] },
   loading: true,
   login: async () => false,
   logout: async () => {},
@@ -23,8 +23,10 @@ const defaultValue: AuthContextType = {
 const AuthContext = createContext<AuthContextType>(defaultValue);
 const initialUser = {
   name: "",
+  email: "",
   _id: "",
   token: "",
+  projects: [],
 };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -46,6 +48,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const data = await res.json();
           setUser(data);
           setIsAuthenticated(true);
+          localStorage.setItem("userId", data._id);
+          localStorage.setItem("token", data.token);
         } else {
           console.log("No user logged in");
         }
@@ -56,8 +60,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     };
 
-    if (user._id && user.token) fetchUser();
-    else setLoading(false);
+    if (user._id && user.token) setLoading(false);
+    else fetchUser();
   }, [user]);
 
   const login = async (email: string, password: string): Promise<boolean> => {
@@ -74,6 +78,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const data = await response.json();
         setUser(data);
         setIsAuthenticated(true);
+        localStorage.setItem("userId", data._id);
+        localStorage.setItem("token", data.token);
         return true;
       } else {
         console.error("Login failed");
@@ -96,8 +102,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
       if (res.ok) {
         const data = await res.json();
+        console.log(data);
         setUser(data);
         setIsAuthenticated(true);
+        localStorage.setItem("userId", data._id);
+        localStorage.setItem("token", data.token);
         return true;
       } else {
         console.error("signup failed");

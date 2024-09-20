@@ -1,5 +1,6 @@
 import asyncHandler from "../middlewares/asyncHandler.js";
 import Project from "../models/projectsModel.js";
+import User from "../models/usersModel.js";
 
 const createProject = asyncHandler(async (req, res) => {
   try {
@@ -18,8 +19,10 @@ const createProject = asyncHandler(async (req, res) => {
       users,
       isDone: false,
     });
-
     const createdProject = await project.save();
+
+    await User.updateMany({ _id: { $in: users } }, { $push: { projects: createdProject._id } });
+
     res.status(201).json(createdProject);
   } catch (error) {
     res.status(400).json({ message: "Project creation failed", error: error.message });

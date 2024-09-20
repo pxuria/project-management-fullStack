@@ -19,3 +19,23 @@ export const signupSchema = yup.object().shape({
     .min(8, "رمز عبور باید حداقل 8 کارکتر باشد.")
     .required("لطفا برای ساخت حساب رمز عبور خود را قرار دهید."),
 });
+
+export const taskSchema = yup.object().shape({
+  name: yup.string().required("نام تسک الزامی است"),
+  project: yup.string().required("شناسه پروژه الزامی است"),
+  addedBy: yup.string().required("شناسه ایجاد کننده تسک الزامی است"),
+  isDone: yup.boolean().notRequired(),
+});
+
+export const projectSchema = yup.object().shape({
+  name: yup.string().required("نام پروژه الزامی است"),
+  description: yup.string().required("توضیحات پروژه الزامی است"),
+  technologies: yup
+    .array()
+    .of(yup.string().required("هر تکنولوژی باید به صورت صحیح وارد شود"))
+    .min(1, "حداقل یک تکنولوژی باید وارد شود")
+    .required("تکنولوژی‌ها الزامی هستند"),
+  deadline: yup.date().required("تاریخ پایان پروژه الزامی است").min(new Date(), "تاریخ پایان پروژه باید در آینده باشد"),
+  users: yup.array().min(1, "حداقل یک کاربر باید وارد شود").required("کاربران الزامی هستند"),
+  isDone: yup.boolean().notRequired(),
+});

@@ -26,13 +26,15 @@ const createUser = asyncHandler(async (req, res) => {
     name: newUser.name,
     email: newUser.email,
     isAdmin: newUser.isAdmin,
+    projects: newUser.projects,
+    tasks: newUser.tasks,
     token,
   });
 });
 
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  const existingUser = await User.findOne({ email });
+  const existingUser = await User.findOne({ email }).populate("projects");
 
   if (!existingUser) {
     res.status(404);
@@ -52,6 +54,7 @@ const loginUser = asyncHandler(async (req, res) => {
       _id: existingUser._id,
       name: existingUser.name,
       email: existingUser.email,
+      projects: existingUser.projects,
       token,
     });
   } catch (error) {
@@ -61,7 +64,7 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const getUserById = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id).select("-password");
+  const user = await User.findById(req.params.id).select("-password").populate("projects");
   if (user) {
     res.status(200).json({
       status: "success",

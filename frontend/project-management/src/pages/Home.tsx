@@ -1,13 +1,32 @@
 import { useState } from "react";
+import { ProjectForm } from "../components/forms";
 import { ListShow } from "../components/home";
+import { Modal, Projects } from "../components/UI";
+import { useAuth } from "../store/useAuth";
 
 const Home = () => {
   const [search, setSearch] = useState("");
-  // const [employees, setEmployees] = useState([{ _id: "1", name: "پوری" }]);
-  const [projects, setProjects] = useState([]);
+  const [toggleAddProduct, setToggleAddProduct] = useState(false);
+  const [toggleAddTask, setToggleAddTask] = useState(false);
+
+  const { user, isAuthenticated } = useAuth();
+
+  const toggleAddProductHandler = () => setToggleAddProduct(!toggleAddProduct);
+  const toggleAddTaskHandler = () => setToggleAddTask(!toggleAddTask);
 
   return (
-    <div className="">
+    <>
+      {toggleAddProduct && (
+        <Modal onClose={toggleAddProductHandler}>
+          <ProjectForm onClose={toggleAddProductHandler} />
+        </Modal>
+      )}
+      {toggleAddTask && (
+        <Modal onClose={toggleAddTaskHandler}>
+          <ProjectForm onClose={toggleAddTaskHandler} />
+        </Modal>
+      )}
+
       {/* search */}
       <div className="flex items-center w-full md:w-1/2 lg:w-1/3">
         <input
@@ -29,11 +48,23 @@ const Home = () => {
         </button>
       </div>
 
-      <section className="border border-[#e2e2e2] mt-8 rounded-lg p-4 flex flex-col lg:flex-row items-start gap-4">
-        {/* <ListShow link={`/users/`} items={employees} title="کارمندان" /> */}
-        <ListShow link={`/projects/`} items={projects} title="پروژه ها" />
+      {isAuthenticated && (
+        <div className="mt-6">
+          <h2 className="font-semibold text-4xl mb-2">{user.name}</h2>
+          <span className="text-base font-normal text-gray-400 select-none">{user.email}</span>
+        </div>
+      )}
+
+      {!isAuthenticated && <p className="my-8 font-semibold text-xl">برای نمایش پروژه ها وارد حساب کاربری خود شوید.</p>}
+
+      <section className="border border-[#e2e2e2] mt-2 rounded-lg p-4 flex flex-col lg:flex-row items-start gap-4">
+        {isAuthenticated && (
+          <ListShow title="پروژه ها" toggleModal={toggleAddProductHandler} btnTitle="اضافه پروژه">
+            <Projects />
+          </ListShow>
+        )}
       </section>
-    </div>
+    </>
   );
 };
 

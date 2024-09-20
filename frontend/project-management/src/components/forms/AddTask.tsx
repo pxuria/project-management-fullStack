@@ -2,27 +2,27 @@ import { useState } from "react";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { ValidationError } from "yup";
 import { useAuth } from "../../store/useAuth";
-import { formProps, signup } from "../../types";
-import { signupSchema } from "../../validations";
+import { formProps, login } from "../../types";
+import { loginSchema } from "../../validations";
 
-const SignupForm = ({ onClose }: formProps) => {
+const AddTask = ({ onClose }: formProps) => {
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
     password: "",
   });
-  const [errors, setErrors] = useState<signup>({});
+  const [errors, setErrors] = useState<login>({});
   const [showPassword, setShowPassword] = useState(false);
-  const { signup } = useAuth();
+  const { login } = useAuth();
 
   const formSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await signupSchema.validate(formData, { abortEarly: false });
-      const success = await signup(formData.name, formData.email, formData.password);
+      await loginSchema.validate(formData, { abortEarly: false });
+
+      const success = await login(formData.email, formData.password);
 
       if (success) onClose();
-      else console.error("Signup failed");
+      else console.error("Login failed");
     } catch (error) {
       if (error instanceof ValidationError) {
         const newErrors: Record<string, string> = {};
@@ -42,26 +42,7 @@ const SignupForm = ({ onClose }: formProps) => {
   };
 
   return (
-    <form action="" onSubmit={formSubmitHandler} className="py-4 px-8 flex flex-col gap-4">
-      {/* name */}
-      <div className="flex items-start flex-col gap-3">
-        <label htmlFor="name" className="text-lg font-medium text-black ">
-          نام کاربری :
-        </label>
-        <div className="flex flex-col gap-1 w-full">
-          <input
-            type="text"
-            className="w-full outline-none py-2 px-4 text-base rounded border border-solid border-[#d9d9d9]"
-            name="name"
-            onChange={formDataChangeHandler}
-            value={formData.name}
-            id="name"
-          />
-          {errors.name && <span className="text-[#FF0000] text-xs">{errors.name}</span>}
-        </div>
-      </div>
-
-      {/* email */}
+    <form onSubmit={formSubmitHandler} className="py-4 px-8 flex flex-col gap-4">
       <div className="flex items-start flex-col gap-3">
         <label htmlFor="email" className="text-lg font-medium text-black ">
           ایمیل :
@@ -80,7 +61,6 @@ const SignupForm = ({ onClose }: formProps) => {
         </div>
       </div>
 
-      {/*  password */}
       <div className="flex items-start flex-col gap-3">
         <label htmlFor="password" className="text-lg font-medium text-black ">
           رمز عبور :
@@ -111,7 +91,7 @@ const SignupForm = ({ onClose }: formProps) => {
           className="w-full font-medium text-lg border border-solid border-primary bg-primary text-white rounded py-2 hover:bg-white hover:text-primary transition-all duration-500 ease-in shadow-md hover:shadow-lg relative isolation-auto z-[4] before:absolute before:w-full before:transition-all before:duration-700 scale-100 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-white before:-z-10 before:aspect-square before:hover:scale-150 overflow-hidden before:hover:duration-700"
           type="submit"
         >
-          ثبت نام
+          ورود
         </button>
         <button
           className="w-full font-medium text-lg border border-solid border-black bg-white text-black rounded py-2 hover:bg-black hover:text-white transition-all duration-500 ease-in shadow-md hover:shadow-lg relative isolation-auto z-[4] before:absolute before:w-full before:transition-all before:duration-700 scale-100 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-black before:-z-10 before:aspect-square before:hover:scale-150 overflow-hidden before:hover:duration-700"
@@ -125,4 +105,4 @@ const SignupForm = ({ onClose }: formProps) => {
   );
 };
 
-export default SignupForm;
+export default AddTask;

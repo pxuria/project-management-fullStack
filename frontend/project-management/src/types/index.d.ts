@@ -17,8 +17,10 @@ export interface userData {
 
 export interface user {
   name: string;
+  email: string;
   _id: string;
   token: string;
+  projects: Array;
 }
 
 export interface signup {
@@ -29,4 +31,22 @@ export interface signup {
 export interface login {
   email?: string;
   password?: string;
+}
+
+export interface project {
+  _id?: string;
+  name: string;
+  description: string;
+  technologies: string[];
+  deadline?: Date | ReactNode;
+  users?: string[];
+  tasks?: string[];
+  isDone?: boolean;
+}
+
+export interface task {
+  name?: string;
+  deadline?: Date;
+  addedBy?: string[];
+  isDone?: boolean;
 }
