@@ -76,4 +76,22 @@ const getUserById = asyncHandler(async (req, res) => {
   }
 });
 
-export { createUser, getUserById, loginUser };
+const getAllUsers = asyncHandler(async (req, res) => {
+  try {
+    const users = await User.find({}).select("-password").populate("projects tasks");
+
+    if (users.length === 0) return res.status(200).json({ message: "No users found." });
+
+    res.status(200).json({
+      status: "success",
+      data: users,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to retrieve users",
+      error: error.message,
+    });
+  }
+});
+
+export { createUser, getAllUsers, getUserById, loginUser };

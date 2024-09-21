@@ -31,11 +31,9 @@ const createProject = asyncHandler(async (req, res) => {
 
 const getProjectById = asyncHandler(async (req, res) => {
   try {
-    const project = await Project.findById(req.params.id).populate("users");
+    const project = await Project.findById(req.params.id).populate("users").populate("tasks");
 
     if (!project) return res.status(404).json({ message: "Project not found" });
-
-    if (project.tasks && project.tasks.length > 0) project = await project.populate("tasks").execPopulate();
 
     res.status(200).json({ status: "success", data: project });
   } catch (error) {
@@ -81,4 +79,23 @@ const deleteProject = asyncHandler(async (req, res) => {
   }
 });
 
-export { createProject, deleteProject, getProjectById, updateProject };
+const searchProjects = asyncHandler(async (req, res) => {
+  try {
+    const { q } = req.query;
+    const projects = await Project.find({
+      $or: [
+        { name: { $regex: q, $options: "i" } },
+        { description: { $regex: q, $options: "i" } },
+        { technologies: { $regex: q, $options: "i" } },
+      ],
+    });
+
+    if (!projects.length) return res.status(404).json({ message: "No projects found" });
+
+    res.status(200).json({ status: "success", data: projects });
+  } catch (error) {
+    res.status(400).json({ message: "Failed to search projects", error: error.message });
+  }
+});
+
+export { createProject, deleteProject, getProjectById, searchProjects, updateProject };

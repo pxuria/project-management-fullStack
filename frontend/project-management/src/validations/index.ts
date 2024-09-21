@@ -22,9 +22,6 @@ export const signupSchema = yup.object().shape({
 
 export const taskSchema = yup.object().shape({
   name: yup.string().required("نام تسک الزامی است"),
-  project: yup.string().required("شناسه پروژه الزامی است"),
-  addedBy: yup.string().required("شناسه ایجاد کننده تسک الزامی است"),
-  isDone: yup.boolean().notRequired(),
 });
 
 export const projectSchema = yup.object().shape({

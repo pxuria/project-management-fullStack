@@ -47,8 +47,10 @@ export interface project {
 }
 
 export interface task {
-  name?: string;
+  _id?: string;
+  name: string;
   deadline?: Date;
-  addedBy?: string[];
+  project?: string;
+  addedBy?: string;
   isDone?: boolean;
 }
