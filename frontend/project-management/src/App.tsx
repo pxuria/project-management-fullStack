@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { Home, ProjectsPage, ProtectedRoute, SharedLayout, Users } from "./pages";
 import { useAuth } from "./store/useAuth";
 
@@ -14,7 +14,7 @@ function App() {
           <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
             <Route path="/projects/:projectId" element={<ProjectsPage />} />
           </Route>
-          <Route path="*" />
+          <Route path="*" element={<Navigate to="/" />} />
         </Route>
       </Routes>
     </>
